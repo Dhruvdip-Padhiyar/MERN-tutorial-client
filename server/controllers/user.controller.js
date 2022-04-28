@@ -45,7 +45,15 @@ const createUser = asyncHandler(async (req, res) => {
 //@access  public
 const loginUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
+  if (!email || !password) {
+    res.status(400);
+    throw new Error("Please enter all fields");
+  }
   const user = await userService.getUser(email);
+  if (!user) {
+    res.status(400);
+    throw new Error("Invalid email or password");
+  }
   const matchedPassword = await bycrypt.compare(password, user.password);
   if (!user || !matchedPassword) {
     res.status(400);
@@ -55,7 +63,7 @@ const loginUser = asyncHandler(async (req, res) => {
     _id: user._id,
     name: user.name,
     email: user.email,
-    tokem: generateToken(user._id),
+    token: generateToken(user._id),
   });
 });
 
@@ -65,8 +73,8 @@ const loginUser = asyncHandler(async (req, res) => {
 //@route   GET /api/users/me
 //@access  private
 const getUser = asyncHandler(async (req, res) => {
-  const { _id, name, email } = await userService.findUserById(req.user.id);
-  res.status(200).send({ _id, name, email });
+  //const { _id, name, email } = await userService.findUserById(req.user.id);
+  res.status(200).send(req.user);
 });
 
 /* ******************************************************************************* */

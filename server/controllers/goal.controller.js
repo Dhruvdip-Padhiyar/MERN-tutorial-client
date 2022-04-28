@@ -36,10 +36,10 @@ const createGoals = asyncHandler(async (req, res) => {
 //@access  Private
 const updateGoal = asyncHandler(async (req, res) => {
   const goalId = req.params.id;
-  const user = await userService.findUserById(req.user.id);
+  // const user = await userService.findUserById(req.user.id);
   const goal = await goalService.updateGoal(goalId, req.body);
   //check for user
-  if (!user) {
+  if (!req.user) {
     res.status(401);
     throw new Error("User not found");
   }
@@ -62,10 +62,10 @@ const updateGoal = asyncHandler(async (req, res) => {
 //@access  Private
 const deleteGoal = asyncHandler(async (req, res) => {
   const goalId = req.params.id;
-  const user = await userService.findUserById(req.user.id);
+  // const user = await userService.findUserById(req.user.id);
   const goal = await goalService.deleteGoal(goalId);
   //check for user
-  if (!user) {
+  if (!req.user) {
     res.status(401);
     throw new Error("User not found");
   }
